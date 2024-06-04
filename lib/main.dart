@@ -3,6 +3,7 @@ import 'package:budgeter/components/home.page.component.dart';
 
 void main() {
   runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
       title: 'Budgeter',
       theme: ThemeData(
         primaryColor: Colors.blue,
