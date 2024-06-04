@@ -1,9 +1,12 @@
 import 'package:budgeter/components/home.page.component.dart';
 import 'package:budgeter/components/planner.page.component.dart';
+import 'package:budgeter/utils/license.dart';
 import 'package:flutter/material.dart';
 
 class BudgeterSettings extends StatefulWidget {
-  const BudgeterSettings({super.key});
+  final License license;
+
+  const BudgeterSettings({super.key, required this.license});
 
   @override
   State<StatefulWidget> createState() {
@@ -23,7 +26,9 @@ class _BudgeterSettingsState extends State<BudgeterSettings> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const BudgeterHome()),
+                MaterialPageRoute(
+                    builder: (context) =>
+                        BudgeterHome(license: widget.license)),
               );
             },
             icon: const Icon(Icons.home)),
@@ -32,7 +37,9 @@ class _BudgeterSettingsState extends State<BudgeterSettings> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const BudgeterPlanner()),
+                    builder: (context) => BudgeterPlanner(
+                          license: widget.license,
+                        )),
               );
             },
             icon: const Icon(Icons.calendar_month)),
