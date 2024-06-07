@@ -1,10 +1,13 @@
-import 'dart:io';
+// ignore_for_file: unused_field
 
-import 'package:budgeter/components/button.component.dart';
+import 'package:budgeter/components/card.component.dart';
+import 'package:budgeter/components/monthly.page.component.dart';
 import 'package:budgeter/components/planner.page.component.dart';
 import 'package:budgeter/components/settings.page.component.dart';
 import 'package:flutter/material.dart';
 import 'package:budgeter/utils/license.dart';
+import 'package:budgeter/components/chart.component.dart';
+import 'package:budgeter/components/weekly.page.component.dart';
 
 class BudgeterHome extends StatefulWidget {
   final License license;
@@ -25,7 +28,6 @@ class _BudgeterHomeState extends State<BudgeterHome> {
     super.initState();
 
     widget.license.readLicenseFile().then((value) {
-      print(value['license']['accepted']);
       if (value['license']['accepted'] == true) {
         setState(() {
           _showDialog = false;
@@ -68,66 +70,73 @@ class _BudgeterHomeState extends State<BudgeterHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 1,
-        titleSpacing: 0,
-        actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.home)),
-          IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          BudgeterPlanner(license: widget.license)),
-                );
-              },
-              icon: const Icon(Icons.calendar_month)),
-          IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          BudgeterSettings(license: widget.license)),
-                );
-              },
-              icon: const Icon(Icons.settings)),
-        ],
-        title: const Padding(
-            padding: EdgeInsets.fromLTRB(20, 0, 0, 0), child: Text("Budgeter")),
-      ),
-      body: Center(
-        child: Button(
-          onPress: () {
-            showDialog(
-                context: context,
-                builder: (builder) {
-                  return AlertDialog(
-                    title: const Text("License"),
-                    content: FutureBuilder(
-                      future: widget.license.readLicenseFile(),
-                      builder: (context, snapshot) {
-                        //print(snapshot.data);
-                        if (snapshot.hasData) {
-                          Map<String, dynamic> data =
-                              snapshot.data as Map<String, dynamic>;
-                          if (data['license']['accepted'] == true) {
-                            return const Text("License accepted");
-                          } else {
-                            return const Text("License not accepted");
-                          }
-                        } else {
-                          return const LinearProgressIndicator();
-                        }
-                      },
-                    ),
+        appBar: AppBar(
+          elevation: 1,
+          titleSpacing: 0,
+          actions: [
+            IconButton(onPressed: () {}, icon: const Icon(Icons.home)),
+            IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            BudgeterPlanner(license: widget.license)),
                   );
-                });
-          },
-          text: "text",
+                },
+                icon: const Icon(Icons.calendar_month)),
+            IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            BudgeterSettings(license: widget.license)),
+                  );
+                },
+                icon: const Icon(Icons.settings)),
+          ],
+          title: const Padding(
+              padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+              child: Text("Budgeter")),
         ),
-      ),
-    );
+        body: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            //crossAxisCount: 2,
+            children: [
+              BudgeterCard(
+                  title: "Weekly",
+                  icon: Icons.calendar_month,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              WeeklyPage(license: widget.license)),
+                    );
+                  },
+                  child:
+                      // limit the size of chart
+                      SizedBox(
+                          width: 1000, height: 100, child: weeklyBarChart())),
+              BudgeterCard(
+                  title: "Monthly",
+                  icon: Icons.calendar_month,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              MonthlyPage(license: widget.license)),
+                    );
+                  },
+                  child:
+                      // limit the size of chart
+                      SizedBox(
+                          width: 1000, height: 100, child: monthlyBarChart())),
+            ],
+          ),
+        ));
   }
 }
